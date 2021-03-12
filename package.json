@@ -1,0 +1,14 @@
+{
+  "name": "InternationalShowtimes",
+  "version": "0.0.1",
+  "description": "Internation Showtimes web crawler",
+  "main": "index.js",
+  "repository": "git@github.com:devamaz/InternationalShowtimes.git",
+  "author": "devamaz <ahmad.abdulaziz37@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "cheerio": "^1.0.0-rc.5",
+    "crawl-e": "http://www.bitbucket.org/cinepass/crawl-e.git#v0.5.2"
+  }
+}
