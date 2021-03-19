@@ -4,12 +4,16 @@ const {
   BaseHtmlParser,
   DefaultLogger,
   ValueGrabber,
+  JsonFileWriter,
 } = require('crawl-e');
 
 let context = new DefaultContext();
 let logger = new DefaultLogger();
 let requestMaker = new DefaultRequestMaker();
 requestMaker.logger = logger;
+
+let outputWriter = new JsonFileWriter();
+outputWriter.logger = logger;
 
 let url = 'https://www.amazon.de/gp/video/storefront';
 
@@ -18,15 +22,16 @@ class RedditResponseParser extends BaseHtmlParser {
     super();
 
     this.links = new ValueGrabber((box, context) => {
-      return `https://www.amazon.de/gp/video/storefront${box
-        .find('a')
-        .attr('href')}`;
+      return `https://www.amazon.de${box.find('a').attr('href')}`;
     });
 
-    this.titleGrabber =  new ValueGrabber('h1._2IIDsE');
-    // this.description = new ValueGrabber('div._3qsVvm div');
+    this.title = new ValueGrabber('h1._2IIDsE');
+    this.description = new ValueGrabber('div._3qsVvm div');
+    this.rating = new ValueGrabber('span.EyZ6mf');
+    this.type = new ValueGrabber(
+      'div._266mZB:nth-child(1) > dl:nth-child(3) > dd:nth-child(2) > a:nth-child(1)'
+    );
   }
-
 
   parseMoviesList(response, context, callback) {
     let { container, parsingContext } = this.prepareHtmlParsing(
@@ -58,10 +63,10 @@ class RedditResponseParser extends BaseHtmlParser {
       container,
       parsingContext,
       'data',
-      { box: 'div.av-detail-section' },
+      { box: 'div._2hu-aV' },
       (box, context, cb) => {
-        // cb(null, this.parseDataBox(box, context));
-        cb(null, box);
+        cb(null, this.parseDataBox(box, context));
+        // cb(null, box);
       },
       callback
     );
@@ -69,7 +74,11 @@ class RedditResponseParser extends BaseHtmlParser {
 
   parseDataBox(box, context) {
     return {
-      title: this.titleGrabber.grabFirst(box, context),
+      Title: this.title.grabFirst(box, context),
+      Type: this.type.grabFirst(box, context),
+      Description: this.description.grabFirst(box, context),
+      AgeRating: this.rating.grabFirst(box, context),
+      // url,
     };
   }
 }
@@ -86,7 +95,14 @@ let crawl = (url, context) => {
         requestMaker.get(link, context, (err, res) => {
           if (err) console.error(`Oh noo, sth. wen't wrong: ${err}`);
           responseParser.parseMainContainer(res, context, (err, data) => {
-            console.log(data);
+            
+            outputWriter.saveFile(data, context, (err) => { 
+              if (err) {
+                console.error(`Oh noo, sth. wen't wrong: ${err}`)
+                return
+              }
+              console.log('All Done', '👏')
+            })
           });
         });
       });

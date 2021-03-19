@@ -1,0 +1,16 @@
+{
+  "crawler": {
+    "id": "amazonprimeCrawl",
+    "crawl-e": {
+      "version": "0.5.2"
+    }
+  },
+  "data": [
+    {
+      "Title": "UnREAL [dt./OV]",
+      "Type": null,
+      "Description": "Die Seriensensation aus den USA! „UnREAL“ wirft als fiktive Serie einen ungeschönten, satirischen und oft schockierenden Blick hinter die Kulissen der amerikanischen „Bachelor“-Variante. Manipulation, Drogen, Sex und Intrigen: Für die Quote gehen Rachel und ihre Producerin Quinn dabei buchstäblich über Leichen.",
+      "AgeRating": "16"
+    }
+  ]
+}
